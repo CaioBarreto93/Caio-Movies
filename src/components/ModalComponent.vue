@@ -8,7 +8,7 @@
 
                     <!-- Modal Header -->
                     <div class="modal-header" :style="backImg()">
-                        <h4 class="modal-title">{{data.title}} - Detalhes</h4>
+                        <h4 class="modal-title" style="background-color: blue;color: aliceblue;">{{data.title}} - Detalhes</h4>
                         <button type="button" class="btn-close" @click.stop.prevent="visible=false"></button>
                     </div>
 
@@ -33,14 +33,25 @@
 </template>
 <script>
 import api from './api.js';
-import eventBus from '@/eventBus';
+//import eventBus from '@/eventBus';
 
 export default {
     data() {
         return {
             data: [],
             visible: false,
-            id: null
+            //id: null
+        }
+    },
+    computed:{
+        id(){
+            return this.$store.state.id
+        }
+    },
+    watch: {
+        id (newId){
+            this.visible=true
+            this.getData(newId)
         }
     },
     methods: { async getData(move) {
@@ -63,14 +74,8 @@ export default {
         }
     },
     created() {
-        var vm = this
-        eventBus.$on('openModal', function (id) {
-            //console.log(id)
-            vm.visible = true
-            vm.id=id
-            //console.log(vm.id)            
-            vm.getData(id)
-        })
+        
+        
         
     }
 }

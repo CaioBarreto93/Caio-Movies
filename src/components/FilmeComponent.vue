@@ -14,7 +14,7 @@
 
 <script>
 import api from './api.js'
-import eventBus from '@/eventBus';
+
 
 export default {
     data() {
@@ -22,20 +22,31 @@ export default {
             data: []
         };
     },
+    computed:{
+        year(){
+            return this.$store.state.year
+        }
+    },
+    watch: {
+        year (newYear){
+            this.getData(newYear)
+        }
+    },
     methods: {
         OpenModal(id) {
             //console.log(id)
-            eventBus.$emit('openModal',id)
+            //eventBus.$emit('openModal',id)
+            this.$store.commit('changeID',id)
                         
         },
         getURL(item) {
             return "https://image.tmdb.org/t/p/w500" + item;
         },
-        async getData(ano=2023) {
+        async getData(ano=new Date().getFullYear()) {
             try {
                 const filmefilter = "discover/movie?api_key=09ad0209384e49f67e81766b6590378a&language=pt-BR&sort_by=popularity.desc&include_adult=true&page=1&primary_release_year="+ano+"&vote_count.gte=4";
                 const response = await api.get(filmefilter);
-                console.log(response.data.results);
+                //console.log(response.data.results);
                 this.data = response.data.results;
             }
             catch (error) {
@@ -44,11 +55,7 @@ export default {
         }
     },
     created() {
-        this.getData();
-        var vm=this
-        eventBus.$on('changeYear', function (ano) {
-            vm.getData(ano)
-        })
+        this.getData();      
     }
     
 }
